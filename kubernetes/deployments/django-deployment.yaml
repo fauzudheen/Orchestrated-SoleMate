@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solemate-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solemate-app
+  template:
+    metadata:
+      labels:
+        app: solemate-app
+    spec:
+      containers:
+        - name: django
+          image: fauzu/solemate:latest 
+          envFrom:
+            - configMapRef:
+                name: solemate-config
+            - secretRef:
+                name: solemate-secret
+          volumeMounts:
+            - name: static-files
+              mountPath: /app/static
+            - name: media-files
+              mountPath: /app/media
+          ports:
+            - containerPort: 8000
+      volumes:
+        - name: static-files
+          emptyDir: {}
+        - name: media-files
+          emptyDir: {}

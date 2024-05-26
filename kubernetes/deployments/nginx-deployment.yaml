@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solemate-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solemate-nginx
+  template:
+    metadata:
+      labels:
+        app: solemate-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: static-files
+              mountPath: /app/static
+            - name: staticfiles
+              mountPath: /app/staticfiles
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: static-files
+          emptyDir: {}
+        - name: staticfiles
+          emptyDir: {}
