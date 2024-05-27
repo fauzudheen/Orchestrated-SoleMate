@@ -32,7 +32,7 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              value: solemate_db
+              value: new
             - name: POSTGRES_USER
               value: postgres
             - name: POSTGRES_PASSWORD
@@ -44,13 +44,29 @@ spec:
         - name: postgres-pvc
           persistentVolumeClaim:
             claimName: postgres-pvc
+      # The issue may be because you should do this in the django container
+      # initContainers:
+      #   - name: migration
+      #     image: fauzu/solemat:latest
+      #     command: ["python", "manage.py", "migrate"]
+      #     env:
+      #       - name: DB_HOST
+      #         value: db
+      #       - name: DB_PORT
+      #         value: "5432"
+      #       - name: DB_NAME
+      #         value: solemate_db
+      #       - name: DB_USER
+      #         value: postgres
+      #       - name: DB_PASSWORD
+      #         value: akkufauzu
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
+  name: db
 spec:
   selector:
     app: postgres
